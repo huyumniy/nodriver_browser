@@ -24,7 +24,7 @@ async def run(browserId, browsersAmount, proxyList):
         
         config = uc.Config(user_data_dir=None, headless=False, browser_executable_path=None,\
         browser_args=None, sandbox=True, lang='en-US')
-        config.add_extension(extension_path="./BPProxySwitcher")
+        config.add_extension(extension_path="./BPProxySwitcher.crx")
         driver = await uc.Browser.create(config=config)
         await driver.get(link)
         tab = driver.main_tab
