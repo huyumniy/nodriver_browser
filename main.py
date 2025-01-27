@@ -6,6 +6,7 @@ import threading
 import random
 import logging
 from colorama import init, Fore
+from nodriver import cdp
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,6 +21,7 @@ init(autoreset=True)
 
 async def run(browserId, browsersAmount, proxyList):
     try:
+        print(proxyList)
         link = 'https://tickets.rolandgarros.com/en/'
         
         config = uc.Config(user_data_dir=None, headless=False, browser_executable_path=None,\
@@ -74,15 +76,24 @@ async def run(browserId, browsersAmount, proxyList):
             await edit.mouse_click()
             time.sleep(1)
             text_area = await tab.select('#proxiesTextArea')
-            await text_area.send_keys(proxyList)
+            for proxy in proxyList:
+                js_function = f"""
+                (elem) => {{
+                    elem.value += "{proxy}\\n";
+                    return elem.value;
+                }}
+                """
+                await text_area.apply(js_function)
             time.sleep(1)
             ok_button = await tab.select('#addProxyOK')
             await ok_button.mouse_click()
             time.sleep(3)
             
             proxy_switch_list = await tab.find_all('#proxySelectDiv > div > div > ul > li')
-            if len(proxy_switch_list) == 3: await proxy_switch_list[2].mouse_click()
-            else: proxy_switch_list[random.randint(2, await len(proxy_switch_list))-1].mouse_click()
+            if len(proxy_switch_list) == 3: 
+                await proxy_switch_list[2].mouse_click()
+            else: 
+                await proxy_switch_list[random.randint(2, len(proxy_switch_list)-1)].mouse_click()
             time.sleep(5)
             
             proxy_auto_reload_checkbox = await tab.select('#autoReload')
