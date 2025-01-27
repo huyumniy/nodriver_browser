@@ -33,13 +33,14 @@
                 button.innerHTML = '';
                 button.style.color = "#0F2027";
                 const browsersAmount = document.querySelector('#browserAmount').value
-                let proxyList = []
+                // let proxyList = []
                 
-                proxyList = document.querySelector('textarea[name="proxyInput"]').value
+                let proxyList = document.querySelector('textarea[name="proxyInput"]').value;
+                let proxyArray = proxyList.split('\n').filter(item => item.trim() !== '');
                 
                 closeWindow()
                 
-                await eel.main(browsersAmount, proxyList)();
+                await eel.main(browsersAmount, proxyArray)();
             }
         }
 
